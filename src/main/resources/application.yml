@@ -1,0 +1,5 @@
+spring:
+    application:
+        name: ccmq
+server:
+    port: 8787
