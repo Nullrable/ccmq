@@ -10,7 +10,7 @@ import lombok.AllArgsConstructor;
 public class CCConsumer {
 
     private String topic;
-    private CCBroker ccBroker;
+    private MQClient ccBroker;
     private String consumerId;
 
     // 消费消息

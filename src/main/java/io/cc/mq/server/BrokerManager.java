@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * @author nhsoft.lsd
  */
-public class MQManager {
+public class BrokerManager {
 
     private static final BrokerKeeper brokerKeeper = new BrokerKeeper();
     private static final Map<String, Subscription> subscriptions = new ConcurrentHashMap<>();//key: topic

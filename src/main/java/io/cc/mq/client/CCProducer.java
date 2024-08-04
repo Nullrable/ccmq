@@ -7,13 +7,13 @@ import io.cc.mq.model.CCMessage;
  */
 public class CCProducer {
 
-    private final CCBroker broker;
+    private final MQClient client;
 
-    public CCProducer(CCBroker broker) {
-        this.broker = broker;
+    public CCProducer(MQClient broker) {
+        this.client = broker;
     }
 
     public void send(final String topic, final CCMessage<?> message) {
-        broker.send(topic, message);
+        client.send(topic, message);
     }
 }

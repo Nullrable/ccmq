@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
  * @author nhsoft.lsd
  */
 @NoArgsConstructor
-public class CCBroker {
+public class MQClient {
+
+    private static final String BROKER_URL = "127.0.0.1:8787/ccmq";
 
     public void sub(final Subscription subscription) {
 

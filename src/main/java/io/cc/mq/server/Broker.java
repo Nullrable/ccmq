@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.RestController;
  * @author nhsoft.lsd
  */
 @RestController
-public class MQServer {
+public class Broker {
 
-    private MQManager mqManager = new MQManager();
+    private BrokerManager mqManager = new BrokerManager();
 
     @GetMapping("/sub")
     public Result<String> sub(@RequestParam("topic") String topic,

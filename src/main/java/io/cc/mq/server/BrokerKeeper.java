@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 
 /**
+ * 负责将消息持久化到磁盘。
+ *
  * @author nhsoft.lsd
  */
 @Data
