@@ -17,7 +17,7 @@ public class Result<T> {
         return new Result<>(0, "ok");
     }
 
-    public static Result<CCMessage<?>> msg(final CCMessage<?> message) {
+    public static Result<CCMessage> msg(final CCMessage message) {
         return new Result<>(0, message);
     }
 

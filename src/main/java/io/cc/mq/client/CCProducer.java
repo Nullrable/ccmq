@@ -13,7 +13,7 @@ public class CCProducer {
         this.client = broker;
     }
 
-    public void send(final String topic, final CCMessage<?> message) {
+    public void send(final String topic, final CCMessage message) {
         client.send(topic, message);
     }
 }

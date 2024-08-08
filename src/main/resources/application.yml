@@ -3,3 +3,5 @@ spring:
         name: ccmq
 server:
     port: 8787
+    servlet:
+        context-path: /ccmq

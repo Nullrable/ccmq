@@ -9,18 +9,18 @@ import lombok.Getter;
  */
 public class MessageQueue {
 
-    private CCMessage<?>[] messages = new CCMessage[1024];
+    private CCMessage[] messages = new CCMessage[1024];
     @Getter
-    private AtomicInteger index = new AtomicInteger(0);
+    private AtomicInteger index = new AtomicInteger(-1);
 
-    public CCMessage<?> get(final int ind) {
+    public CCMessage get(final int ind) {
         if (ind < 0 || ind > index.get()) {
             return null;
         }
         return messages[ind];
     }
 
-    public void add(final CCMessage<?> message) {
+    public void add(final CCMessage message) {
         int ind = index.incrementAndGet();
         if (ind > 1024) {
             throw new RuntimeException("message queue range over, max queue size is 1024");

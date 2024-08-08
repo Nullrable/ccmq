@@ -2,6 +2,7 @@ package io.cc.mq.demo;
 
 import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.ToString;
 
 /**
@@ -9,6 +10,7 @@ import lombok.ToString;
  */
 @AllArgsConstructor
 @ToString
+@Data
 public class Order {
 
     private long id;

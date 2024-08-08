@@ -14,7 +14,7 @@ public class CCConsumer {
     private String consumerId;
 
     // 消费消息
-    public CCMessage<?> poll() {
+    public CCMessage poll() {
         return ccBroker.recv(topic, consumerId);
     }
 }

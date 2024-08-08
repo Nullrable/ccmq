@@ -24,8 +24,8 @@ public class Subscription {
         offset.set(index);
     }
 
-    public int nextOffset() {
-        return offset.incrementAndGet();
+    public int getOffset() {
+        return offset.get();
     }
 
     public String getKey() {

@@ -14,30 +14,30 @@ public class BrokerManager {
     private static final Map<String, Subscription> subscriptions = new ConcurrentHashMap<>();//key: topic
 
     protected void sub(final Subscription subscription) {
-        Subscription preSubscription = subscriptions.putIfAbsent(subscription.getKey(), subscription);
-        if (preSubscription != null) {
-            throw new RuntimeException("topic [" + subscription.getTopic() + "] consumerId [" + subscription.getConsumerId()
-                    + "] already subscribed");
-        }
+        subscriptions.putIfAbsent(subscription.getKey(), subscription);
     }
 
     protected void unsub(final Subscription subscription) {
         subscriptions.remove(subscription.getKey());
     }
 
-    protected void send(final String topic, final CCMessage<?> message) {
+    protected void send(final String topic, final CCMessage message) {
         brokerKeeper.send(topic, message);
     }
 
-    protected CCMessage<?> recv(final String consumerId, final String topic) {
+    protected CCMessage recv(final String consumerId, final String topic) {
         Subscription subscription = subscriptions.get(Subscription.getKey(topic, consumerId));
         if (subscription == null) {
             throw new RuntimeException("topic [" + topic + "] consumerId [" + consumerId + "] subscription not found");
         }
-        return brokerKeeper.recv(topic, subscription.nextOffset());
+        int offset = subscription.getOffset();
+        int nextOffset = offset + 1;
+        CCMessage message = brokerKeeper.recv(topic, nextOffset);
+        message.getHeaders().put("x-offset", nextOffset + "");
+        return message;
     }
 
-    protected CCMessage<?> recv(final String consumerId, final String topic, int index) {
+    protected CCMessage recv(final String consumerId, final String topic, int index) {
         Subscription subscription = subscriptions.get(Subscription.getKey(topic, consumerId));
         if (subscription == null) {
             throw new RuntimeException("topic [" + topic + "] consumerId [" + consumerId + "] subscription not found");
@@ -50,7 +50,7 @@ public class BrokerManager {
         if (subscription == null) {
             throw new RuntimeException("topic [" + topic + "] consumerId [" + consumerId + "] subscription not found");
         }
-        if (offset > subscription.getOffset().get() && offset <= brokerKeeper.getQueueIndex(topic)) {
+        if (offset > subscription.getOffset() && offset <= brokerKeeper.getQueueIndex(topic)) {
             subscription.setOffset(offset);
             return offset;
         } else {
