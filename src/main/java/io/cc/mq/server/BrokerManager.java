@@ -33,6 +33,9 @@ public class BrokerManager {
         int offset = subscription.getOffset();
         int nextOffset = offset + 1;
         CCMessage message = brokerKeeper.recv(topic, nextOffset);
+        if (message == null) {
+            return null;
+        }
         message.getHeaders().put("x-offset", nextOffset + "");
         return message;
     }

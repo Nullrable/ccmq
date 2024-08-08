@@ -29,6 +29,9 @@ public class BrokerKeeper {
             messageQueues.put(topic, new MessageQueue());
         }
         CCMessage message = messageQueues.get(topic).get(offset);
+        if (message == null) {
+            return null;
+        }
         message.getHeaders().put("x-offset", offset + "");
         return message;
     }

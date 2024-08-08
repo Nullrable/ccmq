@@ -1,20 +1,40 @@
 package io.cc.mq.client;
 
 import io.cc.mq.model.CCMessage;
-import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author nhsoft.lsd
  */
-@AllArgsConstructor
 public class CCConsumer {
 
-    private String topic;
-    private MQClient ccBroker;
-    private String consumerId;
+    private String cid;
 
-    // 消费消息
-    public CCMessage poll() {
-        return ccBroker.recv(topic, consumerId);
+    @Getter
+    private Listener listener;
+
+    public CCConsumer(final String cid) {
+        this.cid = cid;
+    }
+
+    public void sub(String topic) {
+        MQClient.sub(topic, cid);
+    }
+
+    public void unsub(String topic) {
+        MQClient.unsub(topic, cid);
+    }
+
+    public CCMessage recv(String topic) {
+        return MQClient.recv(topic, cid);
+    }
+
+    public int ack(String topic, CCMessage message) {
+        return MQClient.ack(topic, cid, message);
+    }
+
+    public void addListener(String topic, Listener listener) {
+        this.listener = listener;
+        ConsumerScheduler.addConsumer(topic, this);
     }
 }
