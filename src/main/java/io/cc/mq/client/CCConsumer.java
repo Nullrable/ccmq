@@ -29,6 +29,11 @@ public class CCConsumer {
         return MQClient.recv(topic, cid);
     }
 
+    public CCMessage recv(String topic, int index) {
+        return MQClient.recv(topic, cid, index);
+    }
+
+
     public int ack(String topic, CCMessage message) {
         return MQClient.ack(topic, cid, message);
     }

@@ -33,8 +33,14 @@ public class Broker {
 
     @GetMapping("/recv")
     public Result<CCMessage> recv(@RequestParam("topic") String topic,
-                                     @RequestParam("cid") String consumerId) {
-        CCMessage message = mqManager.recv(topic, consumerId);
+                                  @RequestParam("cid") String consumerId,
+                                  @RequestParam(value = "index", required = false) Integer index) {
+        CCMessage message;
+        if (index == null) {
+            message = mqManager.recv(topic, consumerId);
+        } else {
+            message = mqManager.recv(topic, consumerId, index);
+        }
         return Result.msg(message);
     }
 

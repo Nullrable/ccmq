@@ -2,6 +2,7 @@ package io.cc.mq.server;
 
 import io.cc.mq.model.CCMessage;
 import io.cc.mq.model.Subscription;
+import io.cc.mq.store.Store;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -31,12 +32,10 @@ public class BrokerManager {
             throw new RuntimeException("topic [" + topic + "] consumerId [" + consumerId + "] subscription not found");
         }
         int offset = subscription.getOffset();
-        int nextOffset = offset + 1;
-        CCMessage message = brokerKeeper.recv(topic, nextOffset);
+        CCMessage message = brokerKeeper.recv(topic, offset);
         if (message == null) {
             return null;
         }
-        message.getHeaders().put("x-offset", nextOffset + "");
         return message;
     }
 
@@ -53,7 +52,7 @@ public class BrokerManager {
         if (subscription == null) {
             throw new RuntimeException("topic [" + topic + "] consumerId [" + consumerId + "] subscription not found");
         }
-        if (offset > subscription.getOffset() && offset <= brokerKeeper.getQueueIndex(topic)) {
+        if (offset > subscription.getOffset() && offset <= Store.LEN) {
             subscription.setOffset(offset);
             return offset;
         } else {

@@ -1,6 +1,8 @@
 package io.cc.mq.server;
 
+import com.alibaba.fastjson.JSON;
 import io.cc.mq.model.CCMessage;
+import io.cc.mq.store.Store;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import lombok.AllArgsConstructor;
@@ -15,31 +17,26 @@ import lombok.Data;
 @AllArgsConstructor
 public class BrokerKeeper {
 
-    private static final Map<String, MessageQueue> messageQueues = new ConcurrentHashMap<>();
+    private static final Map<String, Store> stores = new ConcurrentHashMap<>();
 
     public void send(final String topic, final CCMessage message) {
-        if (!messageQueues.containsKey(topic)) {
-            messageQueues.put(topic, new MessageQueue());
+        if (!stores.containsKey(topic)) {
+            stores.putIfAbsent(topic, new Store(topic));
         }
-        messageQueues.get(topic).add(message);
+        stores.get(topic).add(JSON.toJSONString(message));
     }
 
     public CCMessage recv(final String topic, final int offset) {
-        if (!messageQueues.containsKey(topic)) {
-            messageQueues.put(topic, new MessageQueue());
+        if (!stores.containsKey(topic)) {
+            return null;
         }
-        CCMessage message = messageQueues.get(topic).get(offset);
+        Store store = stores.get(topic);
+        int nextOffset = store.next_pos(offset);
+        CCMessage message = JSON.parseObject(store.get(nextOffset), CCMessage.class);
         if (message == null) {
             return null;
         }
-        message.getHeaders().put("x-offset", offset + "");
+        message.getHeaders().put("x-offset", nextOffset + "");
         return message;
-    }
-
-    public int getQueueIndex(final String topic) {
-        if (!messageQueues.containsKey(topic)) {
-            messageQueues.put(topic, new MessageQueue());
-        }
-        return messageQueues.get(topic).getIndex().get();
     }
 }

@@ -44,6 +44,15 @@ public class MQClient {
         return result.getResult().toJavaObject(CCMessage.class);
     }
 
+    public static CCMessage recv(final String cid, final String topic, final int index) {
+        Result<JSONObject> result = HttpInvoker.get(BROKER_URL + "/recv?topic=" + topic + "&cid=" + cid + "&index=" + index, Result.class);
+        if (result.getResult() == null) {
+            return null;
+        }
+        System.out.println("recv =====>>>>> " + result);
+        return result.getResult().toJavaObject(CCMessage.class);
+    }
+
     public static int ack(final String cid, final String topic, final CCMessage message) {
         Result result = HttpInvoker.post(BROKER_URL + "/ack?topic=" + topic + "&cid=" + cid, message);
         System.out.println("ack =====>>>>> " + result);
